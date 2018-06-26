@@ -80,7 +80,7 @@ while x == 1:
     screen.blit(rotatedSurf, rotRect)               #Put the rotated spinner on screen
 
     degree += 6                                     #Increase angle by six degrees
-    if degree > 360:                                #Reset angle if greater than 120
+    if degree == 360:                               #Reset angle if greater than 360
         degree = 0
     
     ## Placements for choices on the background spinner
@@ -91,13 +91,13 @@ while x == 1:
     textlimegreen = font2.render(resultlist[2],False,(0,0,0))
     screen.blit(textlimegreen,(40,220))
     textorange = font2.render(resultlist[3],False,(0,0,0))
-    screen.blit(textorange,(110,300))
+    screen.blit(textorange,(120,340))
     textcyan = font2.render(resultlist[4],False,(0,0,0))
-    screen.blit(textcyan,(210,300))
+    screen.blit(textcyan,(210,340))
     textpink = font2.render(resultlist[5],False,(0,0,0))
-    screen.blit(textpink,(250,220))
+    screen.blit(textpink,(300,220))
     textblue = font2.render(resultlist[6],False,(0,0,0))
-    screen.blit(textblue,(250,150))
+    screen.blit(textblue,(300,150))
     textyellow = font2.render(resultlist[7],False,(0,0,0))
     screen.blit(textyellow,(210,65))
 
@@ -106,15 +106,30 @@ while x == 1:
     quit()                                          #Allow for quitting
     
     #Change speed of spinner as time goes on
-    if elapsedtime < 100:
+    if elapsedtime < end/6:
         pygame.time.wait(2)
         elapsedtime += 1
-    elif elapsedtime < 200:
+    elif elapsedtime < end/4:
         pygame.time.wait(5)
         elapsedtime += 1
-    elif elapsedtime < end:
+    elif elapsedtime < end/2:
         pygame.time.wait(10)
         elapsedtime += 1
+    elif elapsedtime < end/1.5:
+        pygame.time.wait(15)
+        elapsedtime += 1
+    elif elapsedtime < end/1.2:
+        pygame.time.wait(30)
+        elapsedtime += 1
+    elif elapsedtime < end/1.1:
+        pygame.time.wait(70)
+        elapsedtime += 1
+    elif elapsedtime < end/1.05:
+        pygame.time.wait(150)
+        elapsedtime += 1
+    elif elapsedtime < end:
+        pygame.time.wait(300)
+        elapsedtime += 1    
     elif elapsedtime == end:                        #If it hits the end...
         x = 2                                       #x = 2 kidnaps the main loop to a secondary main loop (stopped spinner)
         while x == 2:
