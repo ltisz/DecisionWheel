@@ -24,7 +24,7 @@ def displayresult(result):
 
 ##INPUT DECISION LIST HERE
 ##
-decisionlist = ['Claymont','Mac Mart','Jimmy Fucking Johns','Chicken','El Diablo','Caltor','Honeygrow','Roots']
+decisionlist = ['Claymont','Mac Mart','Jimmy Johns','Chicken','El Diablo','Caltor','Honeygrow','Roots']
 ##
 ##INPUT DECISION LIST ABOVE
 
