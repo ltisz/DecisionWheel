@@ -4,6 +4,9 @@ import time
 import sys
 import random
 import math
+import json
+import urllib2
+from geopy.geocoders import Nominatim
 
 #Quit function when click windows X
 def quit():
@@ -24,14 +27,17 @@ def displayresult(result):
 
 ##INPUT DECISION LIST HERE
 ##
-decisionlist = ['Choice 1','Choice 2','Choice 3','Choice 4','Choice 5','Choice 6','Choice 7','Choice 8']
+#decisionlist = ['Choice 1','Choice 2','Choice 3','Choice 4','Choice 5','Choice 6','Choice 7','Choice 8']
+address = '163 The Green Newark Delaware'
+choices = 8
 ##
 ##INPUT DECISION LIST ABOVE
 
 pygame.init() #Initializing pygame
 font = pygame.font.SysFont(None, 48)                #Large font for end result
 font2 = pygame.font.SysFont(None, 28)               #Small font for on wheel
-screen = pygame.display.set_mode((400,400))         #Creating 400x400 window
+screensquare = 800
+screen = pygame.display.set_mode((screensquare,screensquare))         #Creating 400x400 window
 degree = 0                                          #Spinner starts at 360 degrees
 elapsedtime = 1                                     #Start time (ms)
 end = random.randint(200,560)                       #End time (ms)
@@ -41,27 +47,42 @@ spin3 = pygame.mixer.Sound("spin3.wav")
 fanfare = pygame.mixer.Sound("fanfare.wav")
 x = 1                                               #x is the variable that controls the main loop
 resultlist = []                                     #List of results, needed in case decision list is < 8
-cx = cy = r = 200
-dividers = len(decisionlist)
+decisionlist = []
+cx = cy = r = screensquare/2
 radconvert = math.pi/180
 
-for i in range(len(decisionlist)):                  #Iterate through decision list
-    resultlist.append(random.choice(decisionlist))  #Append decision to result list randomly
-    decisionlist.remove(resultlist[i])              #Remove used result
+##GEOLOCATION
+geolocator = Nominatim()
+location = geolocator.geocode(address)
+lat = str(location.latitude)
+long = str(location.longitude)
+
+foodurl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyC-rkQPd73r5y0GAVCnIUxpVsHJ38mmDNs&location=" + lat + "," + long + "&rankby=distance&keyword=food&opennow"
+json_string = json.load(urllib2.urlopen(foodurl))
+
+for k in range(choices):
+    decisionlist.append(str(json_string["results"][k]["name"]))
+    
+for t in range(len(decisionlist)):                  #Iterate through decision list
+    resultlist.append(str(random.choice(decisionlist)))  #Append decision to result list randomly
+    decisionlist.remove(resultlist[t])              #Remove used result
 
 print resultlist
+dividers = len(resultlist)
 #MAIN LOOP
 while x == 1:  
     pygame.display.flip()
     screen.fill([255, 255, 255])                    #Fill with white
     
-    surf = pygame.Surface((100,100))                #Creating surface for the spinner
+    surf = pygame.Surface((screensquare/2,screensquare/2))                #Creating surface for the spinner
     surf.fill((255, 255, 255))                      #White fill for the surface
 
     surf.set_colorkey((255,255,255))                #Colorkey out the white fill
 
     surf = pygame.image.load('cool.png').convert_alpha()    #Use convert_alpha to preserve transparency
-    where = 180, 10                                 #Put it in the middle
+    spinwidth = surf.get_rect().width
+    spinheight = surf.get_rect().height
+    where = (screensquare/2)-(spinwidth/2),(screensquare/2)-(spinheight/2)  #Put it in the middle
 
     blittedRect = screen.blit(surf, where)          #Put the spinner on the screen
     screen.fill([255, 255, 255])                    #Re-draw screen
@@ -79,9 +100,9 @@ while x == 1:
         textheight = textChoice.get_rect().height
         screen.blit(textChoice,(
                                 (cx-(textwidth/2))
-                                +((r-100)*math.cos(((i*(360/(dividers*2))))*radconvert)),
+                                +((r-200)*math.cos(((i*(360/(dividers*2))))*radconvert)),
                                 (cy-(textheight/2))
-                                +((r-100)*math.sin(((i*(360/(dividers*2))))*radconvert))
+                                +((r-200)*math.sin(((i*(360/(dividers*2))))*radconvert))
                                 )
                             )
         textChoice = ''
