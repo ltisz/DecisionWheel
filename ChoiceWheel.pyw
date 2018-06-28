@@ -1,3 +1,5 @@
+##-*- coding: utf-8 -*-
+
 import pygame
 from pygame import gfxdraw
 import time
@@ -16,7 +18,6 @@ def quit():
 
 #Function to display large result text
 def displayresult(result):
-    #cheer.play() 
     fanfare.play()
     textsurface = font.render(result, True, (0, 255, 0))
     textrect = textsurface.get_rect()
@@ -29,12 +30,12 @@ def displayresult(result):
 ##
 #decisionlist = ['Choice 1','Choice 2','Choice 3','Choice 4','Choice 5','Choice 6','Choice 7','Choice 8']
 address = '163 The Green Newark Delaware'
-choices = 8
+choices = 12
 ##
 ##INPUT DECISION LIST ABOVE
 
 pygame.init() #Initializing pygame
-font = pygame.font.SysFont(None, 48)                #Large font for end result
+font = pygame.font.SysFont(None, 78)                #Large font for end result
 font2 = pygame.font.SysFont(None, 28)               #Small font for on wheel
 screensquare = 800
 screen = pygame.display.set_mode((screensquare,screensquare))         #Creating 400x400 window
@@ -57,12 +58,15 @@ location = geolocator.geocode(address)
 lat = str(location.latitude)
 long = str(location.longitude)
 
-foodurl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyC-rkQPd73r5y0GAVCnIUxpVsHJ38mmDNs&location=" + lat + "," + long + "&rankby=distance&keyword=food&opennow"
+foodurl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyC-rkQPd73r5y0GAVCnIUxpVsHJ38mmDNs&location=" + lat + "," + long + "&rankby=distance&keyword=restaurant&opennow"
 json_string = json.load(urllib2.urlopen(foodurl))
 
 for k in range(choices):
-    decisionlist.append(str(json_string["results"][k]["name"]))
-    
+    try:
+        decisionlist.append(str(json_string["results"][k]["name"].encode('utf-8')))
+    except:
+        break
+        
 for t in range(len(decisionlist)):                  #Iterate through decision list
     resultlist.append(str(random.choice(decisionlist)))  #Append decision to result list randomly
     decisionlist.remove(resultlist[t])              #Remove used result
