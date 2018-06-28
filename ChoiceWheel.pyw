@@ -24,7 +24,7 @@ def displayresult(result):
 
 ##INPUT DECISION LIST HERE
 ##
-decisionlist = ['Claymont','Mac Mart','Jimmy Johns','Chicken','El Diablo','Caltor','Honeygrow','Roots']
+decisionlist = ['Choice 1','Choice 2','Choice 3','Choice 4','Choice 5','Choice 6','Choice 7','Choice 8']
 ##
 ##INPUT DECISION LIST ABOVE
 
@@ -32,14 +32,13 @@ pygame.init() #Initializing pygame
 font = pygame.font.SysFont(None, 48)                #Large font for end result
 font2 = pygame.font.SysFont(None, 28)               #Small font for on wheel
 screen = pygame.display.set_mode((400,400))         #Creating 400x400 window
-degree = 0                                          #Spinner starts at 0 degrees
+degree = 0                                          #Spinner starts at 360 degrees
 elapsedtime = 1                                     #Start time (ms)
 end = random.randint(200,560)                       #End time (ms)
 spin1 = pygame.mixer.Sound("spin1.wav")
 spin2 = pygame.mixer.Sound("spin2.wav")
 spin3 = pygame.mixer.Sound("spin3.wav")
 fanfare = pygame.mixer.Sound("fanfare.wav")
-cheer = pygame.mixer.Sound("cheer.wav")
 x = 1                                               #x is the variable that controls the main loop
 resultlist = []                                     #List of results, needed in case decision list is < 8
 cx = cy = r = 200
@@ -50,7 +49,6 @@ for i in range(len(decisionlist)):                  #Iterate through decision li
     resultlist.append(random.choice(decisionlist))  #Append decision to result list randomly
     decisionlist.remove(resultlist[i])              #Remove used result
 
-#resultlist=list(reversed(resultlist))
 print resultlist
 #MAIN LOOP
 while x == 1:  
@@ -96,8 +94,8 @@ while x == 1:
 
     screen.blit(rotatedSurf, rotRect)               #Put the rotated spinner on screen
 
-    degree += 6                                     #Increase angle by six degrees
-    if degree == 360:                               #Reset angle if greater than 360
+    degree -= 2                                     #Increase angle by six degrees
+    if degree == -360:                              #Reset angle if greater than 360
         degree = 0
     
     pygame.display.flip()                           #Redraw screen
@@ -141,27 +139,19 @@ while x == 1:
     elif elapsedtime == end:                        #If it hits the end...
         spin1.stop()
         print 'raw degree: ' + str(degree)
-        degCheck = degree-6
+        degCheck = degree#+6
+        degCheck = (-1*degCheck)-90
+        if degCheck < 0:
+            degCheck = degCheck + 360
+        print 'degCheck: ' + str(degCheck)
         x = 2                                       #x = 2 kidnaps the main loop to a secondary main loop (stopped spinner)
-        
-        if len(resultlist) < 3:
-            resultlistnew = resultlist
-        if len(resultlist) < 4:
-            resultlistnew = list(reversed(resultlist))
-        elif len(resultlist) < 6:
-            resultlistnew = list(reversed(resultlist))
-            resultlistnew.append(resultlistnew.pop(0))
-        elif len(resultlist) < 10:
-            resultlistnew=list(reversed(resultlist))
-            resultlistnew.append(resultlistnew.pop(0))
-            resultlistnew.append(resultlistnew.pop(0))
         while x == 2:   
             screen.blit(rotatedSurf, rotRect)       #Draw the stopped spinner                
             for i in range(len(resultlist)):
-                if degCheck > i*(360/len(resultlistnew)) and degCheck < (i+1)*(360/len(resultlistnew)):
+                if degCheck > i*(360/len(resultlist)) and degCheck < (i+1)*(360/len(resultlist)):
                     x = 3
                     print i
-                    result = resultlistnew[i]
+                    result = resultlist[i]
                     displayresult(result)
                     while x == 3:
                         for event in pygame.event.get():
@@ -171,5 +161,14 @@ while x == 1:
                                 end = random.randint(200,560)
                                 break
                         quit()
+                elif degCheck%(360/len(resultlist)) == 0:
+                    x = 3
+                    displayresult('Spinning Again')
+                    print 'on the line'
+                    pygame.time.wait(1)
+                    x = 1
+                    elapsedtime = 1
+                    end = random.randint(200,560)
+                    while x == 3:
+                        quit()   
             quit()
-
