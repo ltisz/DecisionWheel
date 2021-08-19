@@ -44,12 +44,13 @@ resultlist = []                                     #List of results, needed in 
 cx = cy = r = 200
 dividers = len(decisionlist)
 radconvert = math.pi/180
+divvies = int(360/dividers)
 
 for i in range(len(decisionlist)):                  #Iterate through decision list
     resultlist.append(random.choice(decisionlist))  #Append decision to result list randomly
     decisionlist.remove(resultlist[i])              #Remove used result
 
-print resultlist
+print(resultlist)
 #MAIN LOOP
 while x == 1:  
     pygame.display.flip()
@@ -67,7 +68,7 @@ while x == 1:
     screen.fill([255, 255, 255])                    #Re-draw screen
     pygame.draw.circle(screen, (0,0,0), (cx, cy), r, 3)
     for i in range(dividers):
-        gfxdraw.pie(screen, cx, cy, r, i*(360/dividers), (360/dividers), (0,0,0))
+        gfxdraw.pie(screen, cx, cy, r, i*divvies, divvies, (0,0,0))
     i = 1
     iters = range(1,dividers*2,2)
     for i in iters:
@@ -119,9 +120,13 @@ while x == 1:
         pygame.time.wait(15)
         elapsedtime += 1
     elif elapsedtime < end/1.2:
+        spin3.stop()
+        spin3.play()
         pygame.time.wait(30)
         elapsedtime += 1
     elif elapsedtime < end/1.1:
+        spin3.stop()
+        spin3.play()
         pygame.time.wait(70)
         elapsedtime += 1
     elif elapsedtime < end/1.05:
@@ -138,19 +143,19 @@ while x == 1:
         elapsedtime += 1    
     elif elapsedtime == end:                        #If it hits the end...
         spin1.stop()
-        print 'raw degree: ' + str(degree)
+        print('raw degree: ' + str(degree))
         degCheck = degree#+6
         degCheck = (-1*degCheck)-90
         if degCheck < 0:
             degCheck = degCheck + 360
-        print 'degCheck: ' + str(degCheck)
+        print('degCheck: ' + str(degCheck))
         x = 2                                       #x = 2 kidnaps the main loop to a secondary main loop (stopped spinner)
         while x == 2:   
             screen.blit(rotatedSurf, rotRect)       #Draw the stopped spinner                
             for i in range(len(resultlist)):
                 if degCheck > i*(360/len(resultlist)) and degCheck < (i+1)*(360/len(resultlist)):
                     x = 3
-                    print i
+                    print(i)
                     result = resultlist[i]
                     displayresult(result)
                     while x == 3:
@@ -164,7 +169,7 @@ while x == 1:
                 elif degCheck%(360/len(resultlist)) == 0:
                     x = 3
                     displayresult('Spinning Again')
-                    print 'on the line'
+                    print('on the line')
                     pygame.time.wait(1)
                     x = 1
                     elapsedtime = 1
